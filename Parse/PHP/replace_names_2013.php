@@ -1,8 +1,17 @@
 <?
+ini_set('max_execution_time', 300000); //300 seconds = 5 minutes
+$number_of_files = count(glob("regionals/2013/*.txt"));
+$files = glob("regionals/2013/*.txt");
+$off = 60;
+$end = 75;
 
-foreach (glob("regionals/2013/*.txt") as $filename) {
+for($i = $off; $i < $end; $i++){
+	$filename = $files[$i];
+	//echo $filename;
     $data = file_get_contents($filename);
 	$data_to_array = explode(",", $data);
+	//echo $filename;
+	file_put_contents("regionals/2013/".$filename, "");
 	$count = 0;
 	foreach ($data_to_array as $team){
 		$count++;
@@ -14,14 +23,14 @@ foreach (glob("regionals/2013/*.txt") as $filename) {
 		$result = curl_exec ($curl);
 		curl_close ($curl);	
 		
-		echo $result."<br>";
+		//echo $result."<br>";
 		if($count == count($data_to_array)){
 			file_put_contents("regionals/2013/".$filename, $result, FILE_APPEND);
 		}else{
 			file_put_contents("regionals/2013/".$filename, $result.",", FILE_APPEND);
 		}
 	}
-	//echo $filename;
+	echo $filename." and teams = ".$count."<br>";
 	
 }
 

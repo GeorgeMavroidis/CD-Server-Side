@@ -5,7 +5,7 @@
 	
 //$xml = new SimpleXMLElement('<xml/>');
     $curl = curl_init();
-	$url = "http://georgemavroidis.com/cd/Parse/PHP/events2013.html";
+	$url = "https://my.usfirst.org/myarea/index.lasso?page=searchresults&sort_events=name&-session=myarea:0A7D78870320e29DA9ThtK412311#FRC_events";
     curl_setopt ($curl, CURLOPT_URL,$url);
     curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
 
@@ -24,11 +24,11 @@
 	}
 	//Offset the first 7 links and then make an array of urls
 	//$useless_offset = 7;
-	$useless_offset = 75;
-	$stop = 100;
+	$useless_offset = 100;
+	$stop = 110;
 	$new_url_array = array();
 	for($i = $useless_offset; $i < $stop; $i++){
-		$new_url = $data[$i];
+		$new_url = $base_url.$data[$i];
 		$new_url = str_replace("amp;", '', $new_url);
 		$new_url = str_replace("\n", '', $new_url);
 		$new_url = str_replace("andnbsp;", '', $new_url);
@@ -127,7 +127,8 @@ function fetch_code($url){
 function fetch_teams($code){
 	//echo $code;
 	$base_url = "https://my.usfirst.org/myarea/index.lasso";
-	$new_url = "https://my.usfirst.org/myarea/index.lasso?page=event_teamlist&-session=myarea:0A7D7887031aa24A66KNhq2C40E1";
+	$new_url = "https://my.usfirst.org/myarea/index.lasso?page=event_teamlist&-session=myarea:0A7D78870320e29DA9ThtK412311";
+	
 	$new_url = str_replace("amp;", '', $new_url);
 	$new_url = str_replace("\n", '', $new_url);
 	$new_url = str_replace("andnbsp;", '', $new_url);
@@ -148,7 +149,7 @@ function fetch_teams($code){
 	$team_data = array();
 	//Find All links
 	foreach($team_html->find('td') as $element) {
-		  //echo $element->plaintext . '<br>';
+		  echo $element->plaintext . '<br>';
 		  $len = $element->plaintext;
 		  if(strlen($len) < 5){
 		  	array_push($team_data, $element->plaintext);
@@ -160,7 +161,7 @@ function fetch_teams($code){
 	
 	echo $code."<br>";
 	$csv = implode(",",$team_data);
-	$file = 'regionals/2013/'.$code.'.txt';
+	$file = 'regionals/names/'.$code.'.txt';
 	file_put_contents($file, $csv);
 	//echo $csv;
 	//echo $team_html;

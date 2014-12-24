@@ -25,7 +25,6 @@ if($run){
 	$html->load($result);
 
 $data = array();
-
 foreach($html->find('td') as $element) {
       //echo $element->plaintext . '<br>';
 		array_push($data, trim($element->plaintext));
@@ -37,8 +36,11 @@ $match_data_count = 0;
 $match_data = array();
 $elims_data_count = 0;
 $elims_data = array();
-
+$flagged = FALSE;
 foreach($data as $singular) {
+		if($last_singular == "BP"){
+				$flagged = TRUE;
+		}
 		if($last_singular == "Played" && $match_data_count == 0){
 			$start_matches = TRUE;
 		}
@@ -46,13 +48,17 @@ foreach($data as $singular) {
 			$start_matches = FALSE;
 		}
 		if($start_matches){
+			$singular = str_replace(",", '', $singular);
+			$singular = str_replace("&", 'and', $singular);
+			$singular = str_replace("andnbsp;", '', $singular);
 			array_push($match_data, $singular);
+			
 			$match_data_count++;	
 		}
 		$last_singular = $singular;
 		
 }
-if($year == "2014"){
+if($year == "2014" || $flagged){
 	
 	for($i = 0; $i < count($match_data); $i+=10){
 		$item = $xml->addChild('standings');
